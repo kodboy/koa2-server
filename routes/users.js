@@ -66,4 +66,14 @@ router.post('/updatePerson', async ctx => {
   }
 })
 
+router.post('/removePerson', async ctx => {
+  const result = await Person.where({
+    name: ctx.request.body.name
+  }).remove
+  ctx.body = {
+    code: 0,
+    msg: '删除成功'
+  }
+})
+
 module.exports = router
