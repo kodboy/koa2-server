@@ -6,18 +6,28 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 
+// const session = require('koa-generic-session')
+// const Redis = require('koa-redis')
+
 // 我的中间件
 const pv = require('./middleware/koa-pv')
 const m1 = require('./middleware/m1')
 const m3 = require('./middleware/m3')
 const m2 = require('./middleware/m2')
 
+import mongoose from 'mongoose'
+import dbConfig from './dbs/config'
 
 const index = require('./routes/index')
 const users = require('./routes/users')
 
 // error handler
 onerror(app)
+
+// app.keys = ['keys', 'keyskeys']
+// app.use(session({
+//   store: new Redis()
+// }))
 
 // use的先后顺序, 决定了洋葱模型的 从外到内的顺序
 
@@ -34,7 +44,6 @@ app.use(m1())
 app.use(m2())
 app.use(m3())
 
-
 app.use(views(__dirname + '/views', {
   extension: 'ejs'
 }))
@@ -50,6 +59,10 @@ app.use(async (ctx, next) => {
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
+
+mongoose.connect(dbConfig.dbs,{
+  useNewUrlParser: true
+})
 
 // error-handling
 app.on('error', (err, ctx) => {
