@@ -44,4 +44,26 @@ router.post('/addPerson', async ctx => {
   }
 })
 
+router.post('/getPerson', async ctx => {
+  const result = await Person.findOne({ age: ctx.request.body.age })
+  const results = await Person.find({ age: ctx.request.body.age })
+  ctx.body = {
+    code: 0,
+    result,
+    results
+  }
+})
+
+router.post('/updatePerson', async ctx => {
+  const result = await Person.where({
+    name: ctx.request.body.name
+  }).update({
+    age: ctx.request.body.age
+  })
+  ctx.body = {
+    code: 0,
+    msg: '修改成功'
+  }
+})
+
 module.exports = router
